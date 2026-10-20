@@ -5,15 +5,21 @@ public class PlayerMove : MonoBehaviour
 {
     private const float Gravity = -20f;
     private const int MaxJumps = 2;
+    private const float MaxStamina = 100f;
 
     [SerializeField] private float _moveSpeed = 7f;
     [SerializeField] private float _sprintSpeed = 12f;
     // 현재는 단순 점프만 할 것이므로 클래스 분리 없이 이 곳에 점프 작성
     [SerializeField] private float _jumpPower = 10f;
+    [SerializeField] private float _staminaRecovery = 15f;
+    [SerializeField] private float _sprintCost = 10f;
+    [SerializeField] private float _jumpCost = 20f;
+
     [SerializeField] private CharacterController _characterController;
 
     private float _yVelocity;
     private int _jumpCount = 0;
+    private float _stamina;
 
 
     private void Awake()
@@ -24,10 +30,15 @@ public class PlayerMove : MonoBehaviour
         {
             Debug.LogError("[PlayerMove] 플레이어에게 CharacterController 컴포넌트가 없습니다!");
         }
+
+        _stamina = MaxStamina;
     }
 
     private void Update()
     {
+        // 0. 스태미나 회복
+        _stamina = Mathf.Min(MaxStamina, _stamina + _staminaRecovery * Time.deltaTime);
+
         // 1. 키보드 입력을 받는다.
         // GetAxis를 쓰면 입력 시간에 따라 -1 ~ 1 범위로 반환된다.
         // 지금은 관성을 바라지 않으므로 -1, 0, 1을 반환하는 GetAxisRaw를 사용한다.
@@ -53,16 +64,21 @@ public class PlayerMove : MonoBehaviour
         // 4. 만약 점프 키를 누르면 && 점프 카운트가 MaxJumps 이하라면 점프를 한다.
         // (점프 키는 Edit - Project Settings - Input Manager에서 확인 가능, 기본 키는 스페이스 바)
         // (중재자 패턴)
-        if (Input.GetButtonDown("Jump") && _jumpCount < MaxJumps)
+        if (Input.GetButtonDown("Jump") && _jumpCount < MaxJumps && _stamina >= _jumpCost)
         {
             _yVelocity = _jumpPower;
             _jumpCount++;
+            _stamina -= _jumpCost;
         }
 
+        float requiredStamina = _sprintCost * Time.deltaTime;
+        bool isSprint = Input.GetButton("Sprint") && _stamina > requiredStamina;
+
         float currentSpeed = _moveSpeed;
-        if (Input.GetButton("Sprint"))
+        if (isSprint)
         {
             currentSpeed = _sprintSpeed;
+            _stamina -= requiredStamina;
         }
 
         // 5. 속도를 구한다.
