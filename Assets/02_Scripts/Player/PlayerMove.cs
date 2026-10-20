@@ -6,6 +6,7 @@ public class PlayerMove : MonoBehaviour
     private const float Gravity = -20f;
 
     [SerializeField] private float _moveSpeed = 7f;
+    [SerializeField] private float _sprintSpeed = 12f;
     // 현재는 단순 점프만 할 것이므로 클래스 분리 없이 이 곳에 점프 작성
     [SerializeField] private float _jumpPower = 10f;
     [SerializeField] private CharacterController _characterController;
@@ -54,8 +55,14 @@ public class PlayerMove : MonoBehaviour
             _yVelocity = _jumpPower;
         }
 
+        float currentSpeed = _moveSpeed;
+        if (Input.GetButton("Sprint"))
+        {
+            currentSpeed = _sprintSpeed;
+        }
+
         // 5. 속도를 구한다.
-        Vector3 velocity = direction * _moveSpeed;
+        Vector3 velocity = direction * currentSpeed;
         velocity.y = _yVelocity;
 
         // 6. 속도(방향과 속력)에 따라 이동한다.
