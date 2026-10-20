@@ -6,6 +6,7 @@ public class PlayerMove : MonoBehaviour
     private const float Gravity = -20f;
 
     [SerializeField] private float _maxStamina = 100f;
+    public float MaxStamina => _maxStamina;
     [SerializeField] private float _staminaRegeneration = 20f;
 
     [SerializeField] private float _moveSpeed = 7f;
@@ -21,8 +22,11 @@ public class PlayerMove : MonoBehaviour
 
     private bool _isJumping = false;
     private bool _isSprinting = false;
+
     private float _stamina;
+    public float Stamina => _stamina;
     private float _speed;
+
     private float _yVelocity;
     private int _currentJumpCount = 0;
 
