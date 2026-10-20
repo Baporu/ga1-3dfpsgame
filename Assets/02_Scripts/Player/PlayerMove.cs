@@ -3,8 +3,12 @@ using UnityEngine;
 // 키보드 방향키에 따라 그 방향으로 이동하고 싶다.
 public class PlayerMove : MonoBehaviour
 {
+    private const float Gravity = -20f;
+
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private CharacterController _characterController;
+
+    private float _yVelocity;
 
 
     private void Awake()
@@ -30,8 +34,15 @@ public class PlayerMove : MonoBehaviour
         direction.Normalize(); // 대각선이어도 속력을 1로 바꾸기 위해
         direction = transform.TransformDirection(direction);
 
-        // 3. 방향과 속력에 따라 이동한다.
+        // 3. 중력을 누적한다.
+        _yVelocity += Gravity * Time.deltaTime;
+
+        // 4. 속도를 구한다.
+        Vector3 velocity = direction * _moveSpeed;
+        velocity.y = _yVelocity;
+
+        // 4. 속도(방향과 속력)에 따라 이동한다.
         //transform.position += direction * _moveSpeed * Time.deltaTime;
-        _characterController.Move(direction * _moveSpeed * Time.deltaTime);
+        _characterController.Move(velocity * Time.deltaTime);
     }
 }
