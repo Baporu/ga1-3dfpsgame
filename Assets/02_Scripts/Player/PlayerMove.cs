@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     private const float Gravity = -20f;
+    private const int MaxJumps = 2;
 
     [SerializeField] private float _moveSpeed = 7f;
     [SerializeField] private float _sprintSpeed = 12f;
@@ -12,6 +13,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private CharacterController _characterController;
 
     private float _yVelocity;
+    private int _jumpCount = 0;
 
 
     private void Awake()
@@ -45,14 +47,16 @@ public class PlayerMove : MonoBehaviour
         else
         {
             _yVelocity = 0f;
+            _jumpCount = 0;
         }
 
-        // 4. 만약 점프 키를 누르면 && 땅이라면 점프를 한다.
+        // 4. 만약 점프 키를 누르면 && 점프 카운트가 MaxJumps 이하라면 점프를 한다.
         // (점프 키는 Edit - Project Settings - Input Manager에서 확인 가능, 기본 키는 스페이스 바)
         // (중재자 패턴)
-        if (Input.GetButtonDown("Jump") && _characterController.isGrounded)
+        if (Input.GetButtonDown("Jump") && _jumpCount < MaxJumps)
         {
             _yVelocity = _jumpPower;
+            _jumpCount++;
         }
 
         float currentSpeed = _moveSpeed;
