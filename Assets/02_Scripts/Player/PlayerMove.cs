@@ -57,7 +57,7 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
-            _yVelocity = 0f;
+            _yVelocity = Gravity * Time.deltaTime;
             _jumpCount = 0;
         }
 
@@ -88,5 +88,10 @@ public class PlayerMove : MonoBehaviour
         // 6. 속도(방향과 속력)에 따라 이동한다.
         //transform.position += direction * _moveSpeed * Time.deltaTime;
         _characterController.Move(velocity * Time.deltaTime);
+
+        if ((_characterController.collisionFlags & CollisionFlags.Above) != 0 && _yVelocity > 0f)
+        {
+            _yVelocity = 0f;
+        }
     }
 }
