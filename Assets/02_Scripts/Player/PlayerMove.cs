@@ -41,6 +41,10 @@ public class PlayerMove : MonoBehaviour
         {
             _yVelocity += Gravity * Time.deltaTime;
         }
+        else
+        {
+            _yVelocity = 0f;
+        }
 
         // 4. 만약 점프 키를 누르면 && 땅이라면 점프를 한다.
         // (점프 키는 Edit - Project Settings - Input Manager에서 확인 가능, 기본 키는 스페이스 바)
