@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     private const float Gravity = -20f;
+    private const float MaxGravity = -50f;
     private const int MaxJumps = 2;
     private const float MaxStamina = 100f;
 
@@ -122,6 +123,7 @@ public class PlayerMove : MonoBehaviour
             float gravityMultiplier = _yVelocity < 0f ? FallGravityMultiplier : 1f;
 
             _yVelocity += Gravity * gravityMultiplier * deltaTime;
+            _yVelocity = Mathf.Max(_yVelocity, MaxGravity);
 
             // 코요테 타임:
             // 발판에서 떨어진 뒤에도 일정 시간 동안 지상 점프를 허용한다.
