@@ -5,7 +5,9 @@ public class PlayerMove : MonoBehaviour
 {
     private const float Gravity = -20f;
 
-    [SerializeField] private float _moveSpeed = 5f;
+    [SerializeField] private float _moveSpeed = 7f;
+    // 현재는 단순 점프만 할 것이므로 클래스 분리 없이 이 곳에 점프 작성
+    [SerializeField] private float _jumpPower = 10f;
     [SerializeField] private CharacterController _characterController;
 
     private float _yVelocity;
@@ -34,14 +36,25 @@ public class PlayerMove : MonoBehaviour
         direction.Normalize(); // 대각선이어도 속력을 1로 바꾸기 위해
         direction = transform.TransformDirection(direction);
 
-        // 3. 중력을 누적한다.
-        _yVelocity += Gravity * Time.deltaTime;
+        // 3. 땅에 서있지 않을 때만 중력을 누적한다.
+        if (_characterController.isGrounded == false)
+        {
+            _yVelocity += Gravity * Time.deltaTime;
+        }
 
-        // 4. 속도를 구한다.
+        // 4. 만약 점프 키를 누르면 && 땅이라면 점프를 한다.
+        // (점프 키는 Edit - Project Settings - Input Manager에서 확인 가능, 기본 키는 스페이스 바)
+        // (중재자 패턴)
+        if (Input.GetButtonDown("Jump") && _characterController.isGrounded)
+        {
+            _yVelocity = _jumpPower;
+        }
+
+        // 5. 속도를 구한다.
         Vector3 velocity = direction * _moveSpeed;
         velocity.y = _yVelocity;
 
-        // 4. 속도(방향과 속력)에 따라 이동한다.
+        // 6. 속도(방향과 속력)에 따라 이동한다.
         //transform.position += direction * _moveSpeed * Time.deltaTime;
         _characterController.Move(velocity * Time.deltaTime);
     }
