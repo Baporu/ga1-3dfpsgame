@@ -743,11 +743,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 233f5dd0f90f5124cb538bf770389e31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGunFire
+  _hitEffectPrefab: {fileID: 19800002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
+  _maxBulletCount: 30
+  _reloadingTime: 3
   _range: 100
   _damage: 10
   _fireInterval: 0.1
-  _hitEffectPrefab: {fileID: 19800002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
-  _reloadTime: 1.5
 --- !u!114 &374042117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -762,7 +763,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBombFire
   _firePoint: {fileID: 1224719309}
   _bombPrefab: {fileID: 3118296733611467758, guid: ac5af511e45555e4ca794b1900889b07, type: 3}
-  _throwPower: 150
+  _minThrowPower: 200
+  _maxThrowPower: 1000
+  _chargeTime: 5
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
