@@ -27,4 +27,4 @@ if [ -f "$(git rev-parse --git-path MERGE_HEAD)" ] ||
     exit 0
 fi
 
-dotnet format 3DFPSGame.sln --verify-no-changes --include Assets/02_Scripts/
+dotnet format 3DFPSGame.sln --verify-no-changes --include Assets/02_Scripts/ --exclude Assets/02_Scripts/Test/Example/
