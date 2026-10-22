@@ -10,6 +10,7 @@ using UnityEngine;
 public enum ZombieState
 {
     Idle, // 대기: 제자리에서 플레이어를 기다린다.
+    Roam, // 배회: 시작 위치 주변의 랜덤한 위치로 이동한다.
     Trace, // 추격: 플레이어를 쫓아간다.
     Comeback, // 복귀: 처음 자리로 돌아간다.
     Attack, // 공격: 일정 시간마다 플레이어를 때린다.
@@ -27,10 +28,20 @@ public class Zombie : MonoBehaviour
     [SerializeField] private float _moveSpeed = 5f; // 이동속도
     [SerializeField] private float _health = 30f;
 
+    [Header("배회")]
+    [SerializeField] private float _roamRadius = 5f; // 시작 위치를 기준으로 돌아다닐 반경
+    [SerializeField] private float _minRoamInterval = 0.5f; // 배회하기까지 최소 대기 시간
+    [SerializeField] private float _maxRoamInterval = 4f; // 배회하기까지 최대 대기 시간
+
     private CharacterController _controller;
     private Vector3 _startPosition;
     private GameObject _player;
+
     private float _attackTimer;
+
+    private float _roamTimer;
+    private float _roamInterval;
+    private Vector3 _roamPosition;
 
     private ZombieState _state = ZombieState.Idle;
 
@@ -42,6 +53,9 @@ public class Zombie : MonoBehaviour
 
         // 게임을 시작하면 플레이어를 찾는다.
         _player = GameObject.FindGameObjectWithTag("Player");
+
+        // 처음 Idle 상태에서 기다릴 시간을 랜덤하게 정한다.
+        ResetRoamTimer();
     }
 
     private void Update()
@@ -50,6 +64,10 @@ public class Zombie : MonoBehaviour
         {
             case ZombieState.Idle:
                 Idle();
+                break;
+
+            case ZombieState.Roam:
+                Roam();
                 break;
 
             case ZombieState.Trace:
@@ -102,7 +120,54 @@ public class Zombie : MonoBehaviour
         {
             Debug.Log($"{_state} -> Trace");
             _state = ZombieState.Trace;
+            return;
         }
+
+        // 다른 상태로 전이되지 않았다면 일정 시간 뒤 주변을 배회한다.
+        _roamTimer += Time.deltaTime;
+
+        if (_roamTimer >= _roamInterval)
+        {
+            // 시작 위치를 기준으로 원 안의 랜덤한 위치를 정한다.
+            Vector2 randomPosition = Random.insideUnitCircle * _roamRadius;
+
+            _roamPosition = _startPosition;
+            _roamPosition.x += randomPosition.x;
+            _roamPosition.z += randomPosition.y;
+
+            Debug.Log($"{_state} -> Roam");
+            _state = ZombieState.Roam;
+        }
+    }
+
+    // 배회: 시작 위치 주변의 랜덤한 위치로 이동한다.
+    private void Roam()
+    {
+        // 배회 중에도 플레이어를 발견하면 추적한다.
+        float playerDistance = Vector3.Distance(_player.transform.position, transform.position);
+        if (playerDistance < _detectDistance)
+        {
+            Debug.Log($"{_state} -> Trace");
+            _state = ZombieState.Trace;
+            return;
+        }
+
+        // 목표 위치에 도착하면 다시 기다린다.
+        if (Vector3.Distance(transform.position, _roamPosition) < 0.5f)
+        {
+            Debug.Log($"{_state} -> Idle");
+            _state = ZombieState.Idle;
+
+            ResetRoamTimer();
+            return;
+        }
+
+        Vector3 direction = _roamPosition - transform.position;
+        direction.y = 0f;
+        direction.Normalize();
+
+        transform.forward = direction;
+        _controller.SimpleMove(direction * _moveSpeed);
     }
 
     // 추격: 플레이어를 쫓아간다.
@@ -142,6 +207,8 @@ public class Zombie : MonoBehaviour
         {
             Debug.Log($"{_state} -> Idle");
             _state = ZombieState.Idle;
+
+            ResetRoamTimer();
             return;
         }
 
@@ -189,5 +256,12 @@ public class Zombie : MonoBehaviour
         _controller.enabled = false;
         yield return new WaitForSeconds(0.3f);
         Destroy(gameObject);
+    }
+
+    // Idle 상태에서 Roam으로 전이되기까지의 시간을 새로 정한다.
+    private void ResetRoamTimer()
+    {
+        _roamTimer = 0f;
+        _roamInterval = Random.Range(_minRoamInterval, _maxRoamInterval);
     }
 }
