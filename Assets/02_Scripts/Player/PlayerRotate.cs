@@ -10,6 +10,9 @@ public class PlayerRotate : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.State != GameState.Playing)
+            return;
+
         // 카메라 회전과 원리는 똑같지만, 플레이어 오브젝트는 상하로 회전하면 안 되므로 X값만 사용한다.
         float mouseX = Input.GetAxis("Mouse X");
         _accumulatedX += mouseX * _rotationSpeed * Time.deltaTime;

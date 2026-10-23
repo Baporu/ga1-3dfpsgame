@@ -28,7 +28,7 @@ public class Player : MonoBehaviour, IDamageable
 
         if (_health <= 0f)
         {
-            Destroy(gameObject);
+            GameManager.Instance.GameOver();
         }
     }
 }

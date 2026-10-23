@@ -69,6 +69,9 @@ public class Zombie : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        if (GameManager.Instance.State != GameState.Playing)
+            return;
+
         switch (_state)
         {
             case ZombieState.Idle:
