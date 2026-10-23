@@ -5,7 +5,7 @@ public class PlayerMove : MonoBehaviour
 {
     private const float Gravity = -20f;
     private const int MaxJumps = 2;
-    private const float MaxStamina = 100f;
+    public const float MaxStamina = 100f;
 
     [SerializeField] private float _moveSpeed = 7f;
     [SerializeField] private float _sprintSpeed = 12f;
@@ -20,6 +20,7 @@ public class PlayerMove : MonoBehaviour
     private float _yVelocity;
     private int _jumpCount = 0;
     private float _stamina;
+    public float Stamina => _stamina;
 
 
     private void Awake()
