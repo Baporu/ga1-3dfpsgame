@@ -26,7 +26,8 @@ public class Zombie : MonoBehaviour, IDamageable
     [SerializeField] private float _attackRange = 1.5f; // 공격 범위
     [SerializeField] private float _attackInterval = 1f; // 공격 간격
     [SerializeField] private float _moveSpeed = 5f; // 이동속도
-    [SerializeField] private float _health = 30f;
+    [SerializeField] private float _maxHealth = 30f;
+    private float _health;
 
     [Header("배회")]
     [SerializeField] private float _roamRadius = 5f; // 시작 위치를 기준으로 돌아다닐 반경
@@ -36,11 +37,13 @@ public class Zombie : MonoBehaviour, IDamageable
     [Header("이펙트")]
     [SerializeField] private GameObject _bloodSprayPrefab;
 
+    private float _attackTimer;
     private CharacterController _controller;
     private Vector3 _startPosition;
     private GameObject _player;
 
-    private float _attackTimer;
+    public float MaxHealth => _maxHealth;
+    public float Health => _health;
 
     private float _roamTimer;
     private float _roamInterval;
@@ -51,6 +54,8 @@ public class Zombie : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        _health = _maxHealth;
+
         _controller = GetComponent<CharacterController>();
         _startPosition = transform.position;
 
