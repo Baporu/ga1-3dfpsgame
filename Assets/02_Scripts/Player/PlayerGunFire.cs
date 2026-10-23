@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 // 마우스 왼쪽 버튼을 누르면 바라보는 방향으로 총알을 발사하고 싶다.
@@ -78,8 +77,7 @@ public class PlayerGunFire : MonoBehaviour
             effect.Play();
 
             // 맞은 대상이 좀비라면 TakeDamage() 호출
-            hitInfo.collider.GetComponent<Zombie>()?.TakeDamage(_damage);
-            hitInfo.collider.GetComponent<Drum>()?.Damage(_damage);
+            hitInfo.collider.GetComponent<IDamageable>()?.TakeDamage(_damage);
         }
     }
 
