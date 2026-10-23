@@ -1,13 +1,15 @@
-using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour, IDamageable
 {
+    [Header("스탯")]
     [SerializeField] private float _maxHealth = 100f;
-    public float MaxHealth => _maxHealth;
-
     private float _health;
+
+    public float MaxHealth => _maxHealth;
     public float Health => _health;
+
+    [SerializeField] private UI_HitEffect _uiHitEffect;
 
 
     private void Start()
@@ -21,6 +23,8 @@ public class Player : MonoBehaviour, IDamageable
             return;
 
         _health -= damageInfo.Value;
+
+        _uiHitEffect.Flash();
 
         if (_health <= 0f)
         {
