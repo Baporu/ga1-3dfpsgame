@@ -76,8 +76,15 @@ public class PlayerGunFire : MonoBehaviour
             effect.transform.forward = hitInfo.normal;
             effect.Play();
 
+            DamageInfo damageInfo = new DamageInfo
+            {
+                Value = _damage,
+                HitPoint = hitInfo.point,
+                HitNormal = hitInfo.normal
+            };
+
             // 맞은 대상이 좀비라면 TakeDamage() 호출
-            hitInfo.collider.GetComponent<IDamageable>()?.TakeDamage(_damage);
+            hitInfo.collider.GetComponent<IDamageable>()?.TakeDamage(damageInfo);
         }
     }
 

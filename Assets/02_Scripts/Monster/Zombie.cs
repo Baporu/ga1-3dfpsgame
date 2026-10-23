@@ -33,6 +33,9 @@ public class Zombie : MonoBehaviour, IDamageable
     [SerializeField] private float _minRoamInterval = 0.5f; // 배회하기까지 최소 대기 시간
     [SerializeField] private float _maxRoamInterval = 4f; // 배회하기까지 최대 대기 시간
 
+    [Header("이펙트")]
+    [SerializeField] private GameObject _bloodSprayPrefab;
+
     private CharacterController _controller;
     private Vector3 _startPosition;
     private GameObject _player;
@@ -85,17 +88,23 @@ public class Zombie : MonoBehaviour, IDamageable
     }
 
     // 대미지를 받는다.
-    public void TakeDamage(float damage)
+    public void TakeDamage(DamageInfo damageInfo)
     {
         if (_state == ZombieState.Death)
             return;
 
-        _health -= damage;
+        _health -= damageInfo.Value;
 
         StopAllCoroutines();
 
         if (_health > 0f)
         {
+            // 맞은 부위에 피 스프레이 실행하고 싶다.
+            GameObject bloodSpray = Instantiate(_bloodSprayPrefab, transform);
+            bloodSpray.transform.position = damageInfo.HitPoint;
+            bloodSpray.transform.forward = damageInfo.HitNormal;
+            Destroy(bloodSpray, 3f);
+
             // 잠깐 멈칫하고 싶다.
             Debug.Log($"{_state} -> Hit");
             _state = ZombieState.Hit;

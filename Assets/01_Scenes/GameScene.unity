@@ -1682,6 +1682,7 @@ MonoBehaviour:
   _roamRadius: 5
   _minRoamInterval: 0.5
   _maxRoamInterval: 4
+  _bloodSprayPrefab: {fileID: 1000013355911406, guid: d32aa916f50cac94db11e6f19821a58f, type: 3}
 --- !u!1 &1041265437
 GameObject:
   m_ObjectHideFlags: 0
